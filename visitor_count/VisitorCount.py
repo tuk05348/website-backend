@@ -9,11 +9,6 @@ class DecimalEncoder(json.JSONEncoder):
       return str(obj)
     return json.JSONEncoder.default(self, obj)
 
-# Define the DynamoDB table that Lambda will connect to
-table_name = os.environ['DB_NAME']
-    # Create the DynamoDB resource
-dynamo = boto3.resource('dynamodb').Table(table_name)
-
 # Define some functions to perform the CRUD operations
 def create(db, payload):
     return db.put_item(Item=payload['Item'])
@@ -37,6 +32,11 @@ def lambda_handler(event, context):
       - payload: a JSON object containing parameters to pass to the 
         operation being performed
     '''
+    # Define the DynamoDB table that Lambda will connect to
+    table_name = os.environ['DB_NAME']
+    # Create the DynamoDB resource
+    dynamo = boto3.resource('dynamodb').Table(table_name)
+
     event = json.loads(event['body'])
     operation = event['operation']
     payload = event['payload']
