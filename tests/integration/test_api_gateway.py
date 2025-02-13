@@ -1,10 +1,10 @@
 import os
-
+import json
+import requests
 import boto3
 import pytest
-import requests
-import json
-
+from ...visitor_count.VisitorCount import DecimalEncoder
+from .. import key, item, updated_item
 """
 Make sure env variable AWS_SAM_STACK_NAME exists with the name of the stack we are going to test. 
 """
@@ -40,6 +40,22 @@ class TestApiGateway:
 
     def test_api_gateway(self, api_gateway_url):
         """ Call the API Gateway endpoint and check the response """
-        response = requests.post(api_gateway_url, json.dumps({"operation": "read", "payload": {"Key": {"visitor-count-id" : "1"}}}))
+        response = requests.post(api_gateway_url, json.dumps({"operation": "read", "payload": key}))
 
         assert response.status_code == 200
+
+    def test_put(self, api_gateway_url):
+        """ Post test data to the database and check the response """
+        response = requests.post(api_gateway_url, json.dumps({"operation": "create", "payload": item})) 
+        check = response = requests.post(api_gateway_url, json.dumps({"operation": "read", "payload": key}))
+        print(check)
+        assert response.status_code == 200
+        assert int(check.json()["Item"]["number"]) == 0
+
+    def test_update(self, api_gateway_url):
+        """ Update test data and check the response """
+        response = requests.post(api_gateway_url, json.dumps({"operation": "update", "payload": updated_item})) 
+        check = response = requests.post(api_gateway_url, json.dumps({"operation": "read", "payload": key}))
+        print(check)
+        assert response.status_code == 200
+        assert int(check.json()["Item"]["number"]) == 1
