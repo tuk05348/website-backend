@@ -19,6 +19,27 @@ resolve_s3 = true
 s3_prefix = "website"
 region = "us-east-1"
 image_repositories = []
+parameter_overrides = "Environment=\"stage\""
+
+[stage.deploy.parameters]
+stack_name = "website-stage"
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "website"
+region = "us-east-1"
+image_repositories = []
+parameter_overrides = "Environment=\"stage\""
+
+[prod.deploy.parameters]
+stack_name = "website-prod"
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "website"
+region = "us-east-1"
+image_repositories = []
+parameter_overrides = "Environment=\"prod\""
 
 [default.package.parameters]
 resolve_s3 = true

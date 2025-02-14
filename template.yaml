@@ -15,10 +15,27 @@ Globals:
       AllowHeaders: "'content-type'"
       AllowOrigin: "'*'"
 
+Parameters:
+  Environment:
+    Type: String
+    Description: Which environment do you want to deploy to? (local,dev,stage, or prod)
+    AllowedValues:
+    - local
+    - dev
+    - stage
+    - prod
+    Default: local
+
 Resources:
+  ApiDeployment:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Environment
+
   VisitorCountFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
+      FunctionName: !Sub "visitor-count-${Environment}-lambda"
       CodeUri: visitor_count/
       Handler: VisitorCount.lambda_handler
       Runtime: python3.10
@@ -29,17 +46,20 @@ Resources:
           TableName: !Ref VisitorCountTable
       Environment:
         Variables:
+          ENVIRONMENT: !Ref Environment
           DB_NAME: !Ref VisitorCountTable
-          AWS_SAM_STACK_NAME: website
+          AWS_SAM_STACK_NAME: !Sub "website-${Environment}"
       Events:
         VisitorCount:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /visitorcount
             Method: post
+            RestApiId: !Ref ApiDeployment
   VisitorCountTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: !Sub "visitor-count-table-${Environment}"
       AttributeDefinitions:
         - AttributeName: visitor-count-id
           AttributeType: S
@@ -54,7 +74,7 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   VisitorCountApi:
     Description: "API Gateway endpoint URL for Prod stage for Visitor Count function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/visitorcount/"
+    Value: !Sub "https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/visitorcount/"
   VisitorCountFunction:
     Description: "Visitor Count Lambda Function ARN"
     Value: !GetAtt VisitorCountFunction.Arn
