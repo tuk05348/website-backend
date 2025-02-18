@@ -1,0 +1,27 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: set up Python
+        uses: actions/setup-python@v5
+      - name: set up AWS SAM
+        uses: aws-actions/setup-sam@v2
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+      with:
+          role-to-assume: arn:aws:iam::205930627269:role/GithubActionsIAMRole
+          role-session-name: sam-role-session
+          aws-region: ${{ env.AWS_REGION }}
+      # sam build
+#      - run: sam build --use-container
+
+# Run Unit tests- Specify unit tests here
+
+# sam deploy
+#      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name sam-hello-world --s3-bucket ##s3-bucket## >
