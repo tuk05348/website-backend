@@ -6,12 +6,9 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Git clone the repository
-        uses: actions/checkout@v4
-      - name: set up Python
-        uses: actions/setup-python@v5
-      - name: set up AWS SAM
-        uses: aws-actions/setup-sam@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - uses: aws-actions/setup-sam@v2
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -19,9 +16,17 @@ jobs:
           role-session-name: sam-role-session
           aws-region: ${{ env.AWS_REGION }}
       # sam build
-#      - run: sam build --use-container
+      - run: sam build --use-container
 
 # Run Unit tests- Specify unit tests here
-
-# sam deploy
-#      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name sam-hello-world --s3-bucket ##s3-bucket## >
+      - name: install Python modules
+        run: pip install -r tests/requirements.txt --user
+      - name: run unit tests
+        run: pytest -v tests/unit
+# sam deploy stage
+      - run: sam deploy --config-env stage
+      - name: run integration tests
+        run: AWS_SAM_STACK_NAME="website-stage" pytest -v tests/integration
+      - name: cleanup staging
+        run: sam delete --stack-name "website-stage"
+      - run: sam deploy --config-env prod
