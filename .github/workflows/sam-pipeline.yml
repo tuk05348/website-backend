@@ -2,6 +2,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - template.yaml
+      - samconfig.toml
+      - visitor_count/VisitorCount.py
 jobs:
   build-deploy:
     permissions:
