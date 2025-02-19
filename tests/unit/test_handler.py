@@ -1,6 +1,6 @@
 from moto import mock_aws
 from boto3 import resource
-from ...visitor_count.VisitorCount import create, read, update
+from visitor_count.VisitorCount import create, read, update
 from .. import key, item, updated_item
 
 @mock_aws

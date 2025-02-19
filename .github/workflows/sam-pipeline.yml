@@ -11,7 +11,7 @@ jobs:
       - uses: aws-actions/setup-sam@v2
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
-      with:
+        with:
           role-to-assume: arn:aws:iam::205930627269:role/GithubActionsIAMRole
           role-session-name: sam-role-session
           aws-region: ${{ env.AWS_REGION }}
