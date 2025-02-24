@@ -1,7 +1,7 @@
 from pytest import fixture
 from moto import mock_aws
 from boto3 import resource
-from visitor_count.VisitorCount import create, read, update
+from visitor_count.VisitorCount import create, read, update, getAndUpdate
 from .. import key, item, updated_item
 
 @fixture
@@ -15,6 +15,15 @@ def createDB():
         	BillingMode='PAY_PER_REQUEST'
     	)
 		yield dynamodb.Table("visitor-count")
+
+@mock_aws
+def testGetAndUpdateCount(createDB):
+	"""
+	Test if the lambda function returns the updated count from the database
+	"""
+	prev = int(getAndUpdate(createDB)["Item"]["number"])
+	cur = int(getAndUpdate(createDB)["Item"]["number"])
+	assert cur == (prev + 1)
 
 @mock_aws
 def testRead(createDB):

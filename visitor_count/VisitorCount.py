@@ -20,6 +20,10 @@ def update(db, payload):
     return db.update_item(**{k: payload[k] for k in ['Key', 'UpdateExpression', 
     'ExpressionAttributeNames', 'ExpressionAttributeValues'] if k in payload})
 
+def getAndUpdate(db):
+	create(db, {"Item": {"visitor-count-id": "1", "number": "0" }})
+	return read(db, {"Key" : {"visitor-count-id" : "1"}})
+
 operations = {
     'create': create,
     'read': read,
