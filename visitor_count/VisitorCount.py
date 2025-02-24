@@ -1,26 +1,8 @@
 import boto3
 import os
 import json
-from decimal import Decimal
 
-class DecimalEncoder(json.JSONEncoder):
-  def default(self, obj):
-    if isinstance(obj, Decimal):
-      return str(obj)
-    return json.JSONEncoder.default(self, obj)
-
-# Define some functions to perform the CRUD operations
-def create(db, payload):
-    return db.put_item(Item=payload['Item'])
-
-def read(db, payload):
-    return db.get_item(Key=payload['Key'])
-
-def update(db, payload):
-    return db.update_item(**{k: payload[k] for k in ['Key', 'UpdateExpression', 
-    'ExpressionAttributeNames', 'ExpressionAttributeValues'] if k in payload})
-
-def getAndUpdate(db):
+def getAndUpdateCount(db):
 	response = db.get_item(Key={"visitor-count-id" : "1"})
 	updated_count = 1
 	if "Item" not in response:
@@ -36,12 +18,6 @@ def getAndUpdate(db):
             )
 
 	return {'visitor_count': updated_count}
-
-operations = {
-    'create': create,
-    'read': read,
-    'update': update
-}
 
 def lambda_handler(event, context):
     '''Provide an event that contains the following keys:
@@ -61,6 +37,6 @@ def lambda_handler(event, context):
                         "Access-Control-Allow-Origin": "*",
                         "Access-Control-Allow-Methods": "GET"
                         },
-            'body': json.dumps(getAndUpdate(dynamo), cls=DecimalEncoder),
+            'body': json.dumps(getAndUpdateCount(dynamo)),
             'isBase64Encoded': False
             }
