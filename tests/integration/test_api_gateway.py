@@ -40,9 +40,18 @@ class TestApiGateway:
 
     def test_api_gateway(self, api_gateway_url):
         """ Call the API Gateway endpoint and check the response """
-        response = requests.post(api_gateway_url, json.dumps({"operation": "read", "payload": key}))
+        response = requests.get(api_gateway_url)
 
         assert response.status_code == 200
+
+    def test_get_and_update_count(self, api_gateway_url):
+        """ Check if the count is updated after a get request"""
+        res1 = requests.get(api_gateway_url)
+        prev = res1.json().get('visitor_count')
+        res2 = requests.get(api_gateway_url)
+        cur = res2.json().get('visitor_count')
+
+        assert cur == (prev + 1) 
 
     def test_put(self, api_gateway_url):
         """ Post test data to the database and check the response """

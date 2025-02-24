@@ -23,7 +23,7 @@ def testGetAndUpdateCount(createDB):
 	"""
 	prev = getAndUpdate(createDB)
 	cur = getAndUpdate(createDB)
-	assert cur == (prev + 1)
+	assert cur['visitor_count'] == (prev['visitor_count'] + 1)
 
 @mock_aws
 def testRead(createDB):
