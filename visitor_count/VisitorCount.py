@@ -35,7 +35,7 @@ def getAndUpdate(db):
                 }
             )
 
-	return updated_count
+	return {'visitor_count': updated_count}
 
 operations = {
     'create': create,
@@ -54,20 +54,13 @@ def lambda_handler(event, context):
     # Create the DynamoDB resource
     dynamo = boto3.resource('dynamodb').Table(table_name)
 
-    event = json.loads(event['body'])
-    operation = event['operation']
-    payload = event['payload']
-
-    if operation in operations:
-        return {
-                'statusCode': 200,
-                'headers': {
-                            "Access-Control-Allow-Headers" : "Content-Type",
-                            "Access-Control-Allow-Origin": "*",
-                            "Access-Control-Allow-Methods": "POST"
-                            },
-                'body': json.dumps(operations[operation](dynamo, payload), cls=DecimalEncoder),
-                'isBase64Encoded': False
-                }
-    else:
-        raise ValueError(f'Unrecognized operation "{operation}"')
+    return {
+            'statusCode': 200,
+            'headers': {
+                        "Access-Control-Allow-Headers" : "Content-Type",
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Methods": "GET"
+                        },
+            'body': json.dumps(getAndUpdate(dynamo), cls=DecimalEncoder),
+            'isBase64Encoded': False
+            }

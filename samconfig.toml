@@ -19,7 +19,7 @@ resolve_s3 = true
 s3_prefix = "website"
 region = "us-east-1"
 image_repositories = []
-parameter_overrides = "Environment=\"stage\""
+parameter_overrides = "Environment=\"local\""
 
 [stage.deploy.parameters]
 stack_name = "website-stage"
