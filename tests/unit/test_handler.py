@@ -18,7 +18,8 @@ def createDB():
 @mock_aws
 def testGetAndUpdateCount(createDB):
 	"""
-	Test if the lambda function returns the updated count from the database
+	Test if the lambda function returns the updated count from the database by comparing values
+	after subsequent calls to the update function
 	"""
 	prev = getAndUpdateCount(createDB)
 	cur = getAndUpdateCount(createDB)

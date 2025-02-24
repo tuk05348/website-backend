@@ -42,10 +42,12 @@ class TestApiGateway:
         assert response.status_code == 200
 
     def test_get_and_update_count(self, api_gateway_url):
-        """ Check if the count is updated after a get request"""
+        """ Check if the count is updated by 1 after subsequent get requests """
+        #Make the first request and store the value
         res1 = requests.get(api_gateway_url)
         prev = res1.json().get('visitor_count')
+        #Make the second request and store the value
         res2 = requests.get(api_gateway_url)
         cur = res2.json().get('visitor_count')
-
+        #Check that the most current request is greater than the previous request by 1
         assert cur == (prev + 1) 

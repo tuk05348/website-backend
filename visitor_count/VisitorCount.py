@@ -3,6 +3,10 @@ import os
 import json
 
 def getAndUpdateCount(db):
+	"""
+	Get the visitor count from the databse if it exists, if it does not, create an entry
+	in the database. If it does, update the value in the database. Return the created/updated value
+	"""
 	response = db.get_item(Key={"visitor-count-id" : "1"})
 	updated_count = 1
 	if "Item" not in response:
