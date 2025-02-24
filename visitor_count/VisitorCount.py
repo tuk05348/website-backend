@@ -21,8 +21,21 @@ def update(db, payload):
     'ExpressionAttributeNames', 'ExpressionAttributeValues'] if k in payload})
 
 def getAndUpdate(db):
-	create(db, {"Item": {"visitor-count-id": "1", "number": "0" }})
-	return read(db, {"Key" : {"visitor-count-id" : "1"}})
+	response = db.get_item(Key={"visitor-count-id" : "1"})
+	updated_count = 1
+	if "Item" not in response:
+		db.put_item(Item={"visitor-count-id": "1", "number": "1" })
+	else:
+		updated_count = int(response["Item"]["number"]) + 1
+		db.update_item(Key={"visitor-count-id": "1"},
+                UpdateExpression="SET #num = :newNum",
+                ExpressionAttributeNames={"#num": "number"},
+                ExpressionAttributeValues={
+                    ":newNum": updated_count
+                }
+            )
+
+	return updated_count
 
 operations = {
     'create': create,

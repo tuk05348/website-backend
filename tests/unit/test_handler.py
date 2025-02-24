@@ -21,8 +21,8 @@ def testGetAndUpdateCount(createDB):
 	"""
 	Test if the lambda function returns the updated count from the database
 	"""
-	prev = int(getAndUpdate(createDB)["Item"]["number"])
-	cur = int(getAndUpdate(createDB)["Item"]["number"])
+	prev = getAndUpdate(createDB)
+	cur = getAndUpdate(createDB)
 	assert cur == (prev + 1)
 
 @mock_aws
