@@ -13,13 +13,14 @@ def getAndUpdateCount(db):
 		db.put_item(Item={"visitor-count-id": "1", "number": "1" })
 	else:
 		updated_count = int(response["Item"]["number"]) + 1
-		db.update_item(Key={"visitor-count-id": "1"},
-                UpdateExpression="SET #num = :newNum",
-                ExpressionAttributeNames={"#num": "number"},
-                ExpressionAttributeValues={
-                    ":newNum": updated_count
+		db.update_item(**{ "Key" : {"visitor-count-id": "1"},
+                    "UpdateExpression" : "SET #num = :newNum",
+                    "ExpressionAttributeNames" : {"#num": "number"},
+                    "ExpressionAttributeValues" : {
+                        ":newNum": updated_count
+                    }
                 }
-            )
+        )
 
 	return {'visitor_count': updated_count}
 
