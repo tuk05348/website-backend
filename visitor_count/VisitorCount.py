@@ -44,6 +44,6 @@ def lambda_handler(event, context):
                         "Access-Control-Allow-Origin": "*",
                         "Access-Control-Allow-Methods": "GET"
                         },
-            'body': json.dumps(getAndUpdateCount(dynamo, cls=DecimalEncoder)),
+            'body': json.dumps(getAndUpdateCount(dynamo), cls=DecimalEncoder),
             'isBase64Encoded': False
             }
