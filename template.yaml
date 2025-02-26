@@ -62,7 +62,7 @@ Resources:
       TableName: !Sub "visitor-count-table-${Environment}"
       AttributeDefinitions:
         - AttributeName: visitor-count-id
-          AttributeType: N
+          AttributeType: S
       KeySchema:
         - AttributeName: visitor-count-id
           KeyType: HASH

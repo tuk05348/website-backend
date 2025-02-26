@@ -23,4 +23,4 @@ def testGetAndUpdateCount(createDB):
 	"""
 	prev = getAndUpdateCount(createDB)
 	cur = getAndUpdateCount(createDB)
-	assert cur['visitor_count'] == (prev['visitor_count'] + 1)
+	assert cur['visitor-count'] == (prev['visitor-count'] + 1)
