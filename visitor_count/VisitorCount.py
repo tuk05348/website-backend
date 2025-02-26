@@ -1,6 +1,13 @@
 import boto3
 import os
 import json
+import decimal
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return str(obj)
+        return super().default(obj)
 
 def getAndUpdateCount(db):
     """
@@ -37,6 +44,6 @@ def lambda_handler(event, context):
                         "Access-Control-Allow-Origin": "*",
                         "Access-Control-Allow-Methods": "GET"
                         },
-            'body': json.dumps(getAndUpdateCount(dynamo)),
+            'body': json.dumps(getAndUpdateCount(dynamo, cls=DecimalEncoder)),
             'isBase64Encoded': False
             }
